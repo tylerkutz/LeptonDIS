@@ -58,7 +58,7 @@ private:
 	void MCEventInfo();
 	void LeptonRecon();
 
-	TLorentzVector ApplyCrossingAngle(TLorentzVector);
+	TLorentzVector CorrectCrossingAngle(TLorentzVector);
 
 	SvtxTrackMap* mTrackMap;
 	SvtxVertexMap* mVertexMap;

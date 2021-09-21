@@ -190,7 +190,7 @@ void LeptonDIS::LeptonRecon() {
 		g4_tr_th = acos(g4_tr_pz / g4_tr_p);
 		g4_tr_ph = atan2(g4_tr_py, g4_tr_px);		
 
-		TLorentzVector g4_eprime = ApplyCrossingAngle(TLorentzVector(g4_tr_px, g4_tr_py, g4_tr_pz, sqrt(g4_tr_p*g4_tr_p + Me*Me)));
+		TLorentzVector g4_eprime = CorrectCrossingAngle(TLorentzVector(g4_tr_px, g4_tr_py, g4_tr_pz, sqrt(g4_tr_p*g4_tr_p + Me*Me)));
 
 		CalculateDISKinematics(m4Ve, g4_eprime, m4Vh, g4_tr_xB, g4_tr_Q2, g4_tr_W2, g4_tr_y, g4_tr_eta);	
 
@@ -204,7 +204,7 @@ void LeptonDIS::LeptonRecon() {
 			rec_tr_th = acos(rec_tr_pz / rec_tr_p);
 			rec_tr_ph = atan2(rec_tr_py, rec_tr_px);		
 		
-			TLorentzVector rec_eprime = ApplyCrossingAngle(TLorentzVector(rec_tr_px, rec_tr_py, rec_tr_pz, sqrt(rec_tr_p*rec_tr_p + Me*Me)));
+			TLorentzVector rec_eprime = CorrectCrossingAngle(TLorentzVector(rec_tr_px, rec_tr_py, rec_tr_pz, sqrt(rec_tr_p*rec_tr_p + Me*Me)));
 
 			CalculateDISKinematics(m4Ve, rec_eprime, m4Vh, rec_tr_xB, rec_tr_Q2, rec_tr_W2, rec_tr_y, rec_tr_eta);	
 
@@ -289,7 +289,7 @@ void LeptonDIS::ResetVariables() {
 
 }
 
-TLorentzVector LeptonDIS::ApplyCrossingAngle(TLorentzVector vecIn) {
+TLorentzVector LeptonDIS::CorrectCrossingAngle(TLorentzVector vecIn) {
 
 	TLorentzVector vecOut = vecIn;
 	vecOut.RotateY(-mCrossingAngle/2.);
