@@ -164,7 +164,7 @@ void LeptonDIS::LeptonRecon() {
 
 		// Reconstructing with electron
 		// Only care about matching to truth electron track
-		if(truthParticle->get_pid() != 11) continue;
+		if(truthParticle->get_pid() != 11 || truthParticle->get_parent_id() != 0) continue;
 	
 		SvtxTrack* recTrack = nullptr;
 		
