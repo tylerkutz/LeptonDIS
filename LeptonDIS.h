@@ -50,8 +50,9 @@ private:
 	double mHadronE;
 	double mCrossingAngle;
 	
-	TLorentzVector m4Ve;
-	TLorentzVector m4Vh ;
+	TLorentzVector m4Ve;	// electron beam
+	TLorentzVector m4Vh;	// hadron beam
+	TLorentzVector m4Vg;	// virtual photon
 
 	int GetNodes(PHCompositeNode *);
 
@@ -79,13 +80,19 @@ private:
 	double hepmc_xB;
 	double hepmc_Q2;
 
+	double born_y;
+	double born_Q2;
+	double born_xB;
+	double born_W2;
+	double born_eta;
+
 	double rec_tr_px;	
 	double rec_tr_py;	
 	double rec_tr_pz;	
 	double rec_tr_p;	
 	double rec_tr_th;
 	double rec_tr_ph;
-		       
+	
 	double g4_tr_px;	
 	double g4_tr_py;	
 	double g4_tr_pz;	

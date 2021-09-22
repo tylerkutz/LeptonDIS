@@ -29,7 +29,7 @@ LeptonDIS::LeptonDIS(const std::string &name) : SubsysReco(name) {
 	mElectronE = 10.;
 	mHadronE = 100.;
 
-	mCrossingAngle = -25.e-3; // 25 msr
+	mCrossingAngle = 25.e-3; // 25 msr
 
 }
 
@@ -144,13 +144,34 @@ void LeptonDIS::MCEventInfo() {
 		PHHepMCGenEvent* mcEvent = eventIter->second;
 
 		if(mcEvent) {
+
 			HepMC::GenEvent* truthEvent = mcEvent->getEvent();
+
+			// First get truth event info 
+			// (should correspond to leptontic truth)
 			HepMC::PdfInfo* pdfInfo = truthEvent->pdf_info();
 			hepmc_xB = pdfInfo->x2();
 			hepmc_Q2 = pdfInfo->scalePDF();	
+
+			// Next loop over truth particles to find virtual photon
+			// (should correspond to hadronic/Born truth)
+			for (HepMC::GenEvent::particle_const_iterator hepmcPart = truthEvent->particles_begin(); 
+				hepmcPart != truthEvent->particles_end(); ++hepmcPart) {
+
+				if ((*hepmcPart)->status() == 3 && (*hepmcPart)->pdg_id() == 23) {
+					double pxg = (*hepmcPart)->momentum().px();
+					double pyg = (*hepmcPart)->momentum().py();
+					double pzg = (*hepmcPart)->momentum().pz();
+					double Eg = (*hepmcPart)->momentum().e();
+					m4Vg.SetPxPyPzE(pxg, pyg, pzg, Eg);
+					CalculateDISKinematics(m4Ve, m4Ve - m4Vg, m4Vh, born_xB, born_Q2, born_W2, born_y, born_eta);				
+				}
+				
+			} // HepMC particle loop
+			
 		}
 
-	}
+	} // EventMap loop
 
 }
 
@@ -226,6 +247,12 @@ void LeptonDIS::InitializeTree() {
 	mTree->Branch("hepmc_xB",	&hepmc_xB,	"hepmc_xB/D");
 	mTree->Branch("hepmc_Q2",	&hepmc_Q2,	"hepmc_Q2/D");
 
+	mTree->Branch("born_y",		&born_y,	"born_y/D");
+	mTree->Branch("born_Q2",	&born_Q2,	"born_Q2/D");
+	mTree->Branch("born_xB",	&born_xB,	"born_xB/D");
+	mTree->Branch("born_W2",	&born_W2,	"born_W2/D");
+	mTree->Branch("born_eta",	&born_eta,	"born_eta/D");
+
 	mTree->Branch("rec_tr_px",	&rec_tr_px,	"rec_tr_px/D");	
 	mTree->Branch("rec_tr_py",	&rec_tr_py,	"rec_tr_py/D");	
 	mTree->Branch("rec_tr_pz",	&rec_tr_pz,	"rec_tr_pz/D");	
@@ -261,6 +288,12 @@ void LeptonDIS::ResetVariables() {
 	hepmc_xB = -99.;
 	hepmc_Q2 = -99.;
 
+	born_y = -99.; 
+	born_Q2 = -99.; 
+	born_xB = -99.; 
+	born_W2 = -99.; 
+	born_eta = -99.;
+
 	rec_tr_px = -99.;
 	rec_tr_py = -99.;
 	rec_tr_pz = -99.;
@@ -292,8 +325,8 @@ void LeptonDIS::ResetVariables() {
 TLorentzVector LeptonDIS::CorrectCrossingAngle(TLorentzVector vecIn) {
 
 	TLorentzVector vecOut = vecIn;
-	vecOut.RotateY(-mCrossingAngle/2.);
-	vecOut.Boost(-sin(mCrossingAngle/2.),0,0);
+	vecOut.RotateY(mCrossingAngle/2.);
+	vecOut.Boost(sin(mCrossingAngle/2.),0,0);
 	return vecOut;
 
 }
