@@ -158,7 +158,7 @@ void LeptonDIS::MCEventInfo() {
 			for (HepMC::GenEvent::particle_const_iterator hepmcPart = truthEvent->particles_begin(); 
 				hepmcPart != truthEvent->particles_end(); ++hepmcPart) {
 
-				if ((*hepmcPart)->status() == 3 && (*hepmcPart)->pdg_id() == 23) {
+				if ((*hepmcPart)->status() == 3) {
 					double pxg = (*hepmcPart)->momentum().px();
 					double pyg = (*hepmcPart)->momentum().py();
 					double pzg = (*hepmcPart)->momentum().pz();
